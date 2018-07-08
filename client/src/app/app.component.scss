@@ -1,0 +1,10 @@
+
+@import '~assets/style/_variables';
+@import '~assets/style/_mixins';
+
+.app-main-container {
+    @include border-radius(1em);
+	border-style: solid;
+	border-width: 0 2px 2px 2px;
+	border-color: $darker-secondary-color;
+}

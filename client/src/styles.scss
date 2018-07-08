@@ -1,0 +1,120 @@
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/material.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
+@import '~bootstrap/scss/bootstrap';
+@import "~ngx-toastr/toastr-bs4-alert";
+
+@import './assets/style/_variables';
+@import './assets/style/_mixins';
+
+.clickable {
+	cursor: pointer;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.page-title {
+    color: $darker-secondary-color !important;
+
+    @include media-breakpoint-up(md) {
+        margin-bottom: 30px !important;
+    }
+
+    @include media-breakpoint-down(md) {
+        margin-bottom: 15px !important;
+    }
+}
+
+%section-header {
+    font-size: 18px !important;
+    text-transform: uppercase;
+    font-weight: bold !important;
+    text-align: left;
+    color: $darker-secondary-color !important;
+    border-bottom: 1px solid $darker-secondary-color;
+    padding-bottom: 3px;
+}
+
+h3.section-header {
+    @extend %section-header;
+    margin-bottom: 20px;
+}
+
+.table-btn-remove {
+    width: 32px;
+}
+
+p.common-text {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 0;
+}
+
+button.toolbar-button {
+    margin-right: 1rem;
+
+    @include media-breakpoint-down(xs) {
+        width: 100%;
+        margin-bottom: 10px !important;
+    }
+}
+
+/* TOAST */
+
+.toast-container.toast-top-center .toast {
+    top: 20px;
+    @include media-breakpoint-up(sm) {
+        width: 400px;
+    }
+    @include media-breakpoint-up(lg) {
+        width: 500px;
+    }
+}
+
+.toast-container .toast .toast-close-button {
+    border-style: none;
+    background-color: inherit;
+    top: -0.8em;
+    right: -0.8em;
+    span {
+        font-size: 26px;
+    }
+}
+
+/* DATATABLES */
+
+.ngx-datatable.material {
+    box-shadow: none;
+
+    .datatable-header .datatable-header-cell {
+        font-size: 18px;
+    }
+
+    .datatable-body-row {
+        border-width: 1px 0 0 0;
+        border-style: solid;
+        border-color: #e0e0e0;
+    }
+
+    .datatable-footer .datatable-pager .datatable-icon-left, 
+    .ngx-datatable.material .datatable-footer .datatable-pager .datatable-icon-skip,
+    .datatable-footer .datatable-pager .datatable-icon-right,
+    .ngx-datatable.material .datatable-footer .datatable-pager .datatable-icon-prev {
+        font-size: 24px;
+        padding: 0;
+    }
+
+    .datatable-footer-inner {
+        font-weight: bold;
+        .page-count {
+            font-size: 14px;
+        }
+        .datatable-pager {
+            font-size: 16px;
+        }
+    }
+
+}

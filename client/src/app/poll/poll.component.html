@@ -1,0 +1,283 @@
+
+<h2 class="page-title">
+    <i class="fas fa-chart-bar"></i> Enquete no Twitter
+</h2>
+
+<ngb-tabset [destroyOnHide]="false" [activeId]="activeTab" (tabChange)="resizeWindow()">
+    <ngb-tab id="newPollTab">
+        <ng-template ngbTabTitle>
+            <strong>Nova</strong>
+        </ng-template>
+        <ng-template ngbTabContent>
+            <div class="text-right mt-3">
+                <button class="btn btn-primary btn-lg toolbar-button"
+                    type="button"
+                    (appConfirmModal)="insert()"
+                    [disabled]="!canInsert()">
+                    Cadastrar
+                </button>
+            </div>
+
+            <form>
+                <section class="mb-4">
+                    <h3 class="section-header">Dados</h3>
+            
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="name">Nome</label>
+                            <input id="name"
+                                name="name"
+                                class="form-control"
+                                type="text"
+                                [(ngModel)]="model.name">
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label for="hashtag">Hashtag</label>
+                            <input id="hashtag"
+                                name="hashtag"
+                                class="form-control"
+                                type="text"
+                                [(ngModel)]="model.hashtag">
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-4">
+                    <h3 class="section-header">Opções</h3>
+            
+                    <ngx-datatable
+                        #table
+                        class="material"
+                        columnMode="flex"
+                        [headerHeight]="50"
+                        [footerHeight]="50"
+                        rowHeight="auto"
+                        [messages]="tableCustomMessages"
+                        [rows]="rows">
+                        
+                        <ngx-datatable-column name="Nome" prop="name" [flexGrow]="4">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.name }}
+                            </ng-template>
+                        </ngx-datatable-column>
+            
+                        <ngx-datatable-column name="Hashtag" prop="hashtag" [flexGrow]="4">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                #{{ row.hashtag }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                    
+                        <ngx-datatable-column [flexGrow]="1">
+                            <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                                <button class="btn btn-sm btn-danger table-btn-remove"
+                                    ngbTooltip="Remover"
+                                    (click)="removeRow(rowIndex)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </ng-template>
+                        </ngx-datatable-column>
+            
+                        <ngx-datatable-footer>
+                            <ng-template 
+                                ngx-datatable-footer-template
+                                let-rowCount="rowCount"
+                                let-pageSize="pageSize"
+                                let-curPage="curPage">
+                                <div class="page-count">
+                                    Total: {{ rowCount.toLocaleString() }}
+                                </div>
+                                <datatable-pager
+                                    pagerLeftArrowIcon="datatable-icon-left"
+                                    pagerRightArrowIcon="datatable-icon-right"
+                                    pagerPreviousIcon="datatable-icon-prev"
+                                    pagerNextIcon="datatable-icon-skip"
+                                    [page]="curPage"
+                                    [size]="pageSize"
+                                    [count]="rowCount"
+                                    [hidden]="!((rowCount / pageSize) > 1)"
+                                    (change)="table.onFooterPage($event)">
+                                </datatable-pager>
+                            </ng-template>
+                        </ngx-datatable-footer>
+                    
+                    </ngx-datatable>
+            
+                    <div class="row new-option">
+                        <div class="col-md-4">
+                            <input id="newOptionName"
+                                name="newOptionName"
+                                class="form-control px-2"
+                                type="text"
+                                placeholder="Nome"
+                                [(ngModel)]="newOption.name">
+                        </div>
+            
+                        <div class="col-md-4">
+                            <input id="newOptionHashtag"
+                                name="newOptionHashtag"
+                                class="form-control px-2"
+                                type="text"
+                                placeholder="Hashtag"
+                                [(ngModel)]="newOption.hashtag">
+                        </div>
+            
+                        <div class="col-md-4">
+                            <button class="btn btn-success"
+                                type="button"
+                                (click)="insertOption()"
+                                [disabled]="!canInsertOption()">
+                                <i class="fas fa-check"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>  
+                </section>
+                
+            </form>
+        </ng-template>
+    </ngb-tab>
+
+    <ngb-tab *ngIf="currentPoll.name" id="currentPollTab">
+        <ng-template ngbTabTitle>
+            <strong>Atual</strong>
+        </ng-template>
+        <ng-template ngbTabContent>
+            <div class="text-right mt-3">
+                <button class="btn btn-danger toolbar-button"
+                    type="button"
+                    *ngIf="currentPoll.name"
+                    (appConfirmModal)="endPoll()">
+                    <i class="fas fa-trash-alt"></i>
+                    Finalizar
+                </button>
+            </div>
+
+            <form>
+                <section>
+                    <h3 class="section-header">Dados</h3>
+            
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="name">Nome</label>
+                            <p class="common-text">
+                                {{ currentPoll.name }}
+                            </p>
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label for="hashtag">Hashtag</label>
+                            <p class="common-text">
+                                {{ currentPoll.hashtag }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <ng-container *ngIf="pieData.length > 0">
+                                <ngx-charts-pie-chart
+                                    [view]="chartDimensions"
+                                    [results]="pieData"
+                                    [legend]="showLegend"
+                                    legendTitle="Legenda"
+                                    [explodeSlices]="false"
+                                    [labels]="false"
+                                    [doughnut]="false"
+                                    [gradient]="false">
+                                </ngx-charts-pie-chart>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <ng-container *ngIf="lineChartData.length > 0">
+                                <ngx-charts-line-chart
+                                    [view]="chartDimensions"
+                                    [results]="lineChartData"
+                                    [gradient]="false"
+                                    [xAxis]="true"
+                                    [yAxis]="true"
+                                    [legend]="showLegend"
+                                    legendTitle="Legenda"
+                                    [showXAxisLabel]="true"
+                                    [showYAxisLabel]="true"
+                                    xAxisLabel="Horário"
+                                    yAxisLabel="Votos"
+                                    [autoScale]="true">
+                                  </ngx-charts-line-chart>
+                            </ng-container>
+                        </div>
+                    </div>
+
+                </section>
+                
+                <section class="mb-4">
+                    <h3 class="section-header">Opções</h3>
+            
+                    <ngx-datatable
+                        #table
+                        class="material"
+                        columnMode="flex"
+                        [headerHeight]="50"
+                        [footerHeight]="50"
+                        rowHeight="auto"
+                        [messages]="tableCustomMessages"
+                        [rows]="currentPoll.options">
+                        
+                        <ngx-datatable-column name="Nome" prop="name" [flexGrow]="4">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.name }}
+                            </ng-template>
+                        </ngx-datatable-column>
+            
+                        <ngx-datatable-column name="Hashtag" prop="hashtag" [flexGrow]="4">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.hashtag }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                    
+                        <ngx-datatable-column name="Votos" prop="totalVotes" [flexGrow]="4">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.totalVotes }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-footer>
+                            <ng-template 
+                                ngx-datatable-footer-template
+                                let-rowCount="rowCount"
+                                let-pageSize="pageSize"
+                                let-curPage="curPage">
+                                <div class="page-count">
+                                    Total de Opções: {{ rowCount.toLocaleString() }}
+                                </div>
+                                <div class="page-count text-right">
+                                    Total de Votos: {{ totalVotes }}
+                                </div>
+                                <datatable-pager
+                                    pagerLeftArrowIcon="datatable-icon-left"
+                                    pagerRightArrowIcon="datatable-icon-right"
+                                    pagerPreviousIcon="datatable-icon-prev"
+                                    pagerNextIcon="datatable-icon-skip"
+                                    [page]="curPage"
+                                    [size]="pageSize"
+                                    [count]="rowCount"
+                                    [hidden]="!((rowCount / pageSize) > 1)"
+                                    (change)="table.onFooterPage($event)">
+                                </datatable-pager>
+                            </ng-template>
+                        </ngx-datatable-footer>
+                    
+                    </ngx-datatable>
+
+                </section>
+                
+            </form>
+        </ng-template>
+    </ngb-tab>
+</ngb-tabset>
+
+<ng-template #pieTooltip>
+    
+</ng-template>

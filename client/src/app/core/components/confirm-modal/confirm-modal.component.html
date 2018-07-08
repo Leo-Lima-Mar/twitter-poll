@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <i class="fas fa-times"></i> Tem certeza?
+    </h4>
+    <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+
+    <p class="confirm-modal">
+        A enquete atual será finalizada e seus dados serão perdidos.
+    </p>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-light"
+        type="button"
+        (click)="cancel()">Cancelar
+    </button>
+    <button class="btn btn-lg btn-danger"
+        type="button"
+        (click)="ok()">Confirmar
+    </button>
+</div>

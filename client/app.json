@@ -1,0 +1,16 @@
+{
+    "name": "twitter-poll-client",
+    "description": "",
+    "keywords": [
+        "Angular",
+        "Node"
+    ],
+    "repository": "",
+    "success_url": "/",
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "free"
+        }
+    }
+}

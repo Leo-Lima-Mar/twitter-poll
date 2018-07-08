@@ -1,0 +1,7 @@
+@import '~bootstrap/scss/bootstrap';
+
+div.new-option input {
+    @include media-breakpoint-down(md) {
+        margin-bottom: 15px;
+    }
+}
