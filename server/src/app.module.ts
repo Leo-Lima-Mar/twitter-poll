@@ -23,7 +23,7 @@ export class AppModule implements NestModule {
                 }
             }
         });
-        consumer.apply([ CorsMiddleware, MorganMiddleware ])
+        consumer.apply(CorsMiddleware, MorganMiddleware)
             .forRoutes('*');
     }
 
