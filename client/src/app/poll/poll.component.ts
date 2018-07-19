@@ -137,7 +137,7 @@ export class PollComponent implements OnInit {
     }
 
     public removeRow(rowIndex: number): void {
-        this.model.options.splice(rowIndex);
+        this.model.options.splice(rowIndex, 1);
         this.rows = [...this.model.options];
     }
 
